@@ -1,0 +1,4 @@
+{
+  "using": "xpath",
+  "value": "./option[. = \"Wait Commands\"]|./option[normalize-space(text()) = \"Wait Commands\"]|./optgroup/option[. = \"Wait Commands\"]|./optgroup/option[normalize-space(text()) = \"Wait Commands\"]"
+}
