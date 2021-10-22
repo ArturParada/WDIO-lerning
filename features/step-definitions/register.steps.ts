@@ -1,4 +1,5 @@
 import { Given, When, Then } from "@cucumber/cucumber";
+import ChaiRegister from "../pageobjects/register.page";
 
 Given(/^I am on practice page \"([^\"]*)\"$/, async function (appurl: string) {
   await browser.url(appurl);
@@ -6,75 +7,46 @@ Given(/^I am on practice page \"([^\"]*)\"$/, async function (appurl: string) {
 });
 
 Then(/^I validat page header \"([^\"]*)\"$/, async (headertext: string) => {
-  const header = $("//h1");
-  expect(await header).toHaveText(headertext);
+  expect(await ChaiRegister.header).toHaveText(headertext);
 });
 
 When(
   /^I enter firstname (.+) and lastname (.+)$/,
   async (fname: string, lname: string) => {
-    const fname_input = $("[name=firstname]");
-    const lname_input = $("[name=lastname]");
-    await (await fname_input).setValue(fname);
-    await (await lname_input).setValue(lname);
+    await (await ChaiRegister.fname).setValue(fname);
+    await (await ChaiRegister.lname).setValue(lname);
   }
 );
 
 When(
   /^I select gender (.+) years (.+) favorite chai (.+) and reason (.+)$/,
   async (gender: string, yrs: string, favchai: string, reason: string) => {
-    const gender_radio = await $$("[name=sex]");
-    const experience_radio = await $$("[name=exp]");
-    const favchai_checkbox = await $$("input[name*=Tea]");
-    const whychai_checkobox = await $$("[name=tool]");
+    await ChaiRegister.selectDropdown(await ChaiRegister.gender_radio, gender);
 
-    for (let i = 0; i < gender_radio.length; i++) {
-      const element = await gender_radio[i].getAttribute("value");
-      if (element === gender) {
-        await gender_radio[i].click();
-        break;
-      }
-    }
+    await ChaiRegister.selectDropdown(await ChaiRegister.experience_radio, yrs);
 
-    for (let i = 0; i < experience_radio.length; i++) {
-      const element = await experience_radio[i].getAttribute("value");
-      if (element === yrs) {
-        await experience_radio[i].click();
-        break;
-      }
-    }
+    await ChaiRegister.selectDropdown(
+      await ChaiRegister.favchai_checkbox,
+      favchai
+    );
 
-    for (let i = 0; i < favchai_checkbox.length; i++) {
-      const element = await favchai_checkbox[i].getAttribute("value");
-      if (element === favchai) {
-        await favchai_checkbox[i].click();
-        break;
-      }
-    }
-
-    for (let i = 0; i < whychai_checkobox.length; i++) {
-      const element = await whychai_checkobox[i].getAttribute("value");
-      if (element === reason) {
-        await whychai_checkobox[i].click();
-        break;
-      }
-    }
+    await ChaiRegister.selectDropdown(
+      await ChaiRegister.whychai_checkobox,
+      reason
+    );
   }
 );
 
 When(
   /^I select continent (.+) and commands (.+)$/,
   async (continent: string, command: string) => {
-    const continet_dropdown = await $("#continents");
-    const selCommands_multiselect = await $("#selenium_commands");
-
-    await continet_dropdown.selectByVisibleText(continent);
-    await selCommands_multiselect.selectByVisibleText(command);
-    await browser.pause(5000);
+    await (await ChaiRegister.continet_dropdown).selectByVisibleText(continent);
+    await (
+      await ChaiRegister.selCommands_multiselect
+    ).selectByVisibleText(command);
   }
 );
 
 When(/^I click on submit button$/, async () => {
-  const submit_btn = await $("#submit");
-  await submit_btn.click();
+  await (await ChaiRegister.submit_btn).click();
 });
